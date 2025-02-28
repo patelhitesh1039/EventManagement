@@ -1,0 +1,771 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Event Management API",
+        "description": "The Event Management API allows users to create, manage, and book events effortlessly. Users can register and log in to the platform, create and manage their events, and book seats for available events. The API provides endpoints for handling event details, user authentication, role-based access control, and booking management. It supports features like secure JWT authentication, validation of event parameters, and robust error handling. This API serves as a comprehensive solution for event organizers and attendees, facilitating efficient event management and seamless user experiences.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "User name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "User password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "jwt_token_here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login a user",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "User password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "jwt_token_here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/bookings": {
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Create a new booking",
+                "operationId": "da90bc20ca6eae827987e9f6f429e425",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "event_id",
+                        "in": "query",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "seats",
+                        "in": "query",
+                        "description": "Number of seats to book",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Booking status",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "booked",
+                                "canceled"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Booking created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking created successfully"
+                                        },
+                                        "booking": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/bookings/{id}": {
+            "delete": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Delete a booking",
+                "operationId": "f4ce392b80757eb75903465f91830c94",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking canceled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking canceled successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Get all events",
+                "operationId": "6736aebed0941ff4422bc846010614af",
+                "responses": {
+                    "200": {
+                        "description": "Events retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Events retrieved successfully"
+                                        },
+                                        "events": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Create a new event",
+                "operationId": "cdb0dac3d1d1015ba1c07cf45b015651",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Event title",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Event description",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location",
+                        "in": "query",
+                        "description": "Event location",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "start_time",
+                        "in": "query",
+                        "description": "Event start time in format YYYY-MM-DD HH:MM:SS",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-12-02 01:01:01"
+                        }
+                    },
+                    {
+                        "name": "end_time",
+                        "in": "query",
+                        "description": "Event end time in format YYYY-MM-DD HH:MM:SS",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "capacity",
+                        "in": "query",
+                        "description": "Event capacity",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 100
+                        }
+                    },
+                    {
+                        "name": "created_by",
+                        "in": "query",
+                        "description": "User ID who created the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Event created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event created successfully"
+                                        },
+                                        "event": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/my-events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Get events by user ID",
+                "operationId": "760b94f7e3bb0a4c5316bbfb0b99737e",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Events retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Events retrieved successfully"
+                                        },
+                                        "events": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{id}": {
+            "put": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Update an event",
+                "operationId": "5a89f8a4f76f310919b14f27a710cda6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Event title",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Event description",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location",
+                        "in": "query",
+                        "description": "Event location",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "start_time",
+                        "in": "query",
+                        "description": "Event start time in format YYYY-MM-DD HH:MM:SS",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-12-02 01:01:01"
+                        }
+                    },
+                    {
+                        "name": "end_time",
+                        "in": "query",
+                        "description": "Event end time in format YYYY-MM-DD HH:MM:SS",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2025-12-02 01:01:01"
+                        }
+                    },
+                    {
+                        "name": "capacity",
+                        "in": "query",
+                        "description": "Event capacity",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event updated successfully"
+                                        },
+                                        "event": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Event not found or you are not authorized to update this event"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Delete an event",
+                "operationId": "65b5ef5022f59f21ddbced0ab464d4a8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "operationId": "036a0a69e21d30ab3594be7990af7f74",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "John Doe"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "john@example.com"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{id}/role": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user role",
+                "operationId": "2ad76c7430875144b5402b6d9e5ef29f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "roleId",
+                        "in": "query",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User role updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User role updated successfully"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john@example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter your JWT token",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Bookings",
+            "description": "Bookings"
+        },
+        {
+            "name": "Events",
+            "description": "Events"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        }
+    ]
+}
